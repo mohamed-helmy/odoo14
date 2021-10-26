@@ -1,0 +1,12 @@
+version: '2'
+services:
+  initialize:
+    build: ./initialize
+    volumes:
+      - ./addons:/mnt/extra-addons
+    environment:
+      - ADMIN_PASSWORD
+      - DB_NAME
+      - DB_MASTER_PASSWORD
+      - RESTORE_CUSTOM_DB
+      - REFRESH_DATE_TEST_DB

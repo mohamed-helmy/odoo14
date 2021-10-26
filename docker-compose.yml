@@ -1,0 +1,40 @@
+version: '2'
+services:
+  web:
+    build: ./odoo
+    restart: always
+    depends_on:
+      - db
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config/odoo.conf:/etc/odoo/odoo.conf
+      - ./addons:/mnt/extra-addons
+    environment:
+         - HOST=db
+         - USER=odoo
+         - PASSWORD=odoo
+         - DB_MASTER_PASSWORD
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: '10'
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: '10'
+        
+volumes:
+  odoo-web-data:
+  odoo-db-data:

@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+  proxy:
+    image: nginx
+    restart: always
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: '10'
+    ports:
+      - 8000:80
+
+  backup:
+    build: ./ofelia
+    restart: always
+    environment:
+      - BACKUP_DIR
+      - DB_NAME
+      - DB_MASTER_PASSWORD
+      - PREFIX_BACKUP_NAME
+    volumes:
+      - ./config/backup_odoo.sh:/usr/backup_odoo.sh
+      - ../backups:/usr/backups
+      - ./config/ofelia.ini:/etc/ofelia/config.ini
+    logging:
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: '10'
+  db:
+    command: -c 'shared_buffers=2048MB' -c 'effective_cache_size=4096'
+  web:
+    command: --db_host=db -r odoo -w odoo
