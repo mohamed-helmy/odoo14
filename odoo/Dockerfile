@@ -1,4 +1,4 @@
-FROM ejaftech/e-odoo14:14.0.20210928
+FROM odoo:16.0
 USER root
 RUN set -x; \
 	apt-get update \
